@@ -4,6 +4,7 @@ class Controller {
     constructor (routeName) {
         this.routeName = routeName;
 
+        // separate actions by method
         this.getActions = {};
         this.postActions = {};
         this.putActions = {};
@@ -13,6 +14,7 @@ class Controller {
         this.init();
     }
 
+    // method to add actions
     init () {
         throw new Error('init() Not implemented');
     }
@@ -58,8 +60,10 @@ class Controller {
     }
 
     async handle (method, path, params, res) {
+        // retrieve get, post, put, delete or patch methods
         let action = this[method](path);
         if (action) {
+            // call method
             await action(params, res);
         } else {
             writeNotFoundResponse(res);

@@ -4,9 +4,16 @@ const validatorFactory = require("../Factory/validatorFactory");
 
 class Searcher {
     constructor (parserName) {
+        // name to be used to create the parser from factory
         this.parserName = parserName;
-        this.formatters = {};
+
+        // name of validators to be used for respective info validation
+        // ex: { infoName: 'factoryNameOfValidator', ... }
         this.validators = {};
+        
+        // name of formatters to be used for respective info formatting
+        // ex: { infoName: 'factoryNameOfFormatter', ... }
+        this.formatters = {};
     
         this.init();
     }
@@ -23,11 +30,12 @@ class Searcher {
         this.validators[paramName]  = validatorName;
     }
 
+    // retrieve, validate and format data
     async search (params) {
         const parser = parserFactory(this.parserName);
 
         const data = await parser.parse(params);
-        console.log(this.validateAndFormatData(data));
+
         return this.validateAndFormatData(data);
     }
 
@@ -36,13 +44,14 @@ class Searcher {
 
         for (const [paramName, param] of Object.entries(data)) {
             if (this.validators[paramName] && this.formatters[paramName]) {
+                // validate data
                 const validator = validatorFactory(this.validators[paramName]);
                 if (validator && !validator.validate(param)) {
                     continue;
                 }
 
+                // format data
                 const formatter = formatterFactory(this.formatters[paramName]);
-                console.log(formatter)
                 formattedData[paramName] = formatter ? formatter.format(param) : param;
             }
         }

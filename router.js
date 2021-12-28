@@ -4,8 +4,6 @@ const { writeNotFoundResponse, writeInternalErrorResponse } = require('./respons
 const controllerFactory = require('./Factory/controllerFactory');
 
 const router = (req, res) => {
-    console.log('test');
-
     const { query, pathname } = url.parse(req.url, true);
 
     const method = req.method.toLowerCase();

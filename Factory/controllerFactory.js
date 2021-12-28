@@ -1,13 +1,12 @@
 const SearchController = require("../Controller/SearchController");
 
 const controllerFactory = (routeName) => {
-    let controller = null;
     switch (routeName) {
         case 'search':
-            controller = new SearchController();
+            return new SearchController();
     }
 
-    return controller;
+    return null;
 }
 
 module.exports = controllerFactory;

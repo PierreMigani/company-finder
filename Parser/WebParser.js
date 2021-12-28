@@ -7,8 +7,15 @@ const Parser = require('./Parser.js');
 class WebParser extends Parser {
     constructor (webpageBaseUrl, infoSelectors = {}, requestHeaders = {}) {
         super();
+
+        // base url of the webpage
         this.webpageBaseUrl = webpageBaseUrl;
+
+        // element selectors for specific infos
+        // ( ex: { info: selector, ... } )
         this.infoSelectors = infoSelectors;
+
+        // set request headers for axios
         this.requestHeaders = requestHeaders;
     }
 
@@ -22,27 +29,42 @@ class WebParser extends Parser {
         throw new Error("getUrlParams() Not implemented");
     }
 
-    parse (params) {
+    // get data with axios
+    async getData (url) {
+        const response = await axios.get(url, { headers: this.requestHeaders });
+        console.log(url)
+        if (response.status === 200) {
+            return response.data;
+        }
+
+        return null;
+    }
+
+    async parse (params) {
         const foundInfos = {};
+
+        // build complete url
         const url = this.buildUrl(params);
-        console.log(`Fetching ${url}`);
 
-        return axios.get(url, { headers: this.requestHeaders })
-            .then((response) => {
-                if (response.status === 200) {
-                    const html = response.data;
-                    const $ = cheerio.load(html);
+        // get search webpage raw html
+        const html = await this.getData(url);
 
-                    for (const [info, selector] of Object.entries(this.infoSelectors)) {
-                        foundInfos[info] = $(selector).text();
-                    }
+        if (html) {
+            // load webpage with cheerio to be able to get specific elements
+            const $ = cheerio.load(html);
 
-                    return foundInfos;
+            // get all element texts with the given selectors
+            for (const [info, selector] of Object.entries(this.infoSelectors)) {
+                if ($(selector).length > 0) {
+                    // save the respective info
+                    foundInfos[info] = $(selector).text();
                 }
+            }
 
-                return null;
-        }, (error) => null );
+            return foundInfos;
+        }
 
+        return null;
     }
 }
 

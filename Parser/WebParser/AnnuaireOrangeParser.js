@@ -1,6 +1,7 @@
 const WebParser = require('../WebParser.js');
 
 class AnnuaireOrangeParser extends WebParser {
+    // note: annuaire orange have a captcha protection when receiving too much requests
     constructor () {
         super(
             'https://annuaire.118712.fr/fr',

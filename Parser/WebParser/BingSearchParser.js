@@ -1,6 +1,6 @@
 const WebParser = require('../WebParser.js');
 
-// doesn't work, should be implemented with a lib like pupeeteer
+// doesn't work, probably should be implemented with a lib like pupeeteer
 class BingSearchParser extends WebParser {
     constructor () {
         super(

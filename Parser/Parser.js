@@ -1,7 +1,7 @@
 class Parser {
     constructor () {}
 
-    parse () {
+    async parse () {
         throw new Error("parse() Not implemented");
     }
 }
